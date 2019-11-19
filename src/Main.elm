@@ -6,6 +6,7 @@ import Element.Background as Background
 import Element.Events as Events
 import Element.Font as Font
 import Json.Decode as Decode
+import Unique
 
 
 main : Program () Model Msg
@@ -25,15 +26,17 @@ main =
 type alias Model =
     { title : String
     , h1 : String
-    , sections : List Section
+    , directory : Directory
     , activeLink : Maybe Int
     }
 
 
-type alias Section =
-    { name : String
-    , entries : List Entry
-    }
+type Directory
+    = Directory (List Section)
+
+
+type Section
+    = Section String (List Entry)
 
 
 type alias Entry =
@@ -48,58 +51,62 @@ initialModel : Model
 initialModel =
     { title = "Perpetually Peregrine"
     , h1 = "Web Directory"
-    , sections =
-        [ Section "Art"
-            [ Entry 1
-                "Jakub Rozalski"
-                "https://jrozalski.com/"
-                (row []
-                    [ el [] (text "Art used in ")
-                    , el [ Font.italic ] (text "Scythe")
-                    , el [] (text " (board game)")
-                    ]
-                )
+    , directory =
+        Directory
+            [ Section "Art"
+                [ Entry 1
+                    "Jakub Rozalski"
+                    "https://jrozalski.com/"
+                    (row []
+                        [ el [] (text "Art used in ")
+                        , el [ Font.italic ] (text "Scythe")
+                        , el [] (text " (board game)")
+                        ]
+                    )
+                ]
+            , Section "Shopping"
+                [ Entry 2
+                    "Higher Hacknell"
+                    "https://www.higherhacknell.co.uk/cat/organic-wool-and-sheepskins"
+                    (el [] (text "Wool and sheepskins - met the farmer in Romania at Count Kalnoky's estate"))
+                , Entry 3
+                    "Redbubble - Appa"
+                    "https://www.redbubble.com/shop/appa"
+                    (row []
+                        [ el [] (text "Appa-related merchandise (from ")
+                        , el [ Font.italic ] (text "Avatar: The Last Airbender")
+                        , el [] (text ")")
+                        ]
+                    )
+                , Entry 4
+                    "Rose Colored Gaming"
+                    "https://rosecoloredgaming.com/"
+                    (el [] <|
+                        text
+                            "Display stands for consoles, controllers, cartridges"
+                    )
+                ]
+            , Section "Trees"
+                [ Entry 5
+                    "Christmas Tree Farms in Germany"
+                    "https://www.pickyourownchristmastree.org/DUxmastrees.php"
+                    Element.none
+                , Entry 6
+                    "Monumental Trees"
+                    "https://www.monumentaltrees.com/en/"
+                    Element.none
+                , Entry 7
+                    "Monumental Trees in Bavaria"
+                    "https://www.monumentaltrees.com/en/records/deu/bavaria/"
+                    Element.none
+                ]
+            , Section "Video Games"
+                [ Entry 8
+                    "Wii & Wii U Modding Guide"
+                    "https://sites.google.com/site/completesg/home"
+                    Element.none
+                ]
             ]
-        , Section "Shopping"
-            [ Entry 2
-                "Higher Hacknell"
-                "https://www.higherhacknell.co.uk/cat/organic-wool-and-sheepskins"
-                (el [] (text "Wool and sheepskins - met the farmer in Romania at Count Kalnoky's estate"))
-            , Entry 3
-                "Redbubble - Appa"
-                "https://www.redbubble.com/shop/appa"
-                (row []
-                    [ el [] (text "Appa-related merchandise (from ")
-                    , el [ Font.italic ] (text "Avatar: The Last Airbender")
-                    , el [] (text ")")
-                    ]
-                )
-            , Entry 4
-                "Rose Colored Gaming"
-                "https://rosecoloredgaming.com/"
-                (el [] (text "Display stands for consoles, controllers, cartridges"))
-            ]
-        , Section "Trees"
-            [ Entry 5
-                "Christmas Tree Farms in Germany"
-                "https://www.pickyourownchristmastree.org/DUxmastrees.php"
-                Element.none
-            , Entry 6
-                "Monumental Trees"
-                "https://www.monumentaltrees.com/en/"
-                Element.none
-            , Entry 7
-                "Monumental Trees in Bavaria"
-                "https://www.monumentaltrees.com/en/records/deu/bavaria/"
-                Element.none
-            ]
-        , Section "Video Games"
-            [ Entry 8
-                "Wii & Wii U Modding Guide"
-                "https://sites.google.com/site/completesg/home"
-                Element.none
-            ]
-        ]
     , activeLink = Nothing
     }
 
@@ -141,18 +148,24 @@ colors =
     , success = rgb 0.275 0.533 0.278
     , warning = rgb 0.8 0.2 0.2
     , link = rgb 0.361 0.502 0.737
-    , black = rgb 0.05 0.05 0.05
+    , black = rgb 0.067 0.067 0.067
     , darkgrey = rgb 0.31 0.31 0.31
     , lightgrey = rgb 0.733 0.733 0.733
-    , white = rgb 0.99 0.99 0.99
+    , white = rgb 0.99 0.99 0.973
     }
 
 
 view : Model -> Browser.Document Msg
 view model =
+    let
+        sections =
+            case model.directory of
+                Directory dirSections ->
+                    dirSections
+    in
     Browser.Document model.title
         [ Element.layout
-            [ Font.color colors.darkgrey
+            [ Font.color colors.black
             , Font.family [ Font.typeface "Georgia", Font.serif ]
             , paddingEach { edges | top = 20, left = 30, right = 30 }
             , Background.color colors.white
@@ -160,7 +173,7 @@ view model =
           <|
             column [ width fill, spacing 25 ]
                 (viewPageHeading model.h1
-                    :: List.map (viewSection model.activeLink) model.sections
+                    :: List.map (viewSection model.activeLink) sections
                 )
         ]
 
@@ -168,7 +181,7 @@ view model =
 viewPageHeading : String -> Element msg
 viewPageHeading heading =
     el
-        [ Font.size 40
+        [ Font.size 48
         , Font.heavy
         , paddingEach { edges | bottom = 10 }
         ]
@@ -176,15 +189,15 @@ viewPageHeading heading =
 
 
 viewSection : Maybe Int -> Section -> Element Msg
-viewSection activeLink section =
-    column [ spacing 8 ]
+viewSection activeLink (Section name entries) =
+    column [ spacing 12 ]
         (el
-            [ Font.size 28
-            , Font.heavy
+            [ Font.size 32
+            , Font.italic
             , paddingEach { edges | bottom = 10 }
             ]
-            (text section.name)
-            :: List.map (viewEntry activeLink) section.entries
+            (text name)
+            :: List.map (viewEntry activeLink) entries
         )
 
 
@@ -209,7 +222,7 @@ viewEntry activeLink entry =
                 Nothing ->
                     baseAttributes
     in
-    column [ paddingEach { edges | left = 40 } ]
+    column [ paddingEach { edges | left = 40 }, spacing 3 ]
         [ link attributes { url = entry.target, label = text entry.anchor }
         , entry.extra
         ]
