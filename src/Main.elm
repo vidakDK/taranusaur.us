@@ -219,7 +219,11 @@ view model =
             , Background.color colors.white
             ]
           <|
-            column [ width fill, spacing 25 ]
+            column
+                [ width fill
+                , spacing 25
+                , paddingEach { edges | bottom = 30 }
+                ]
                 (viewPageHeading model.h1
                     :: List.map (viewSection 1 model.activeLink) sections
                 )
