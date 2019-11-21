@@ -49,18 +49,24 @@ initialModel =
             [ Section "Airplanes"
                 [ Entry "Lufthansa Surprise"
                     "https://www.lufthansa-surprise.com/"
-                    (el [] <| text "Travel around Europe to a surprise destination")
+                    (paragraph []
+                        [ text "Travel around Europe to a surprise destination"
+                        ]
+                    )
                 , Entry "OurAirports"
                     "https://ourairports.com/"
-                    (el [] <| text "Information about all of the world's airports")
+                    (paragraph []
+                        [ text "Information about all of the world's airports"
+                        ]
+                    )
                 ]
             , Section "Art"
                 [ Entry "Jakub Rozalski"
                     "https://jrozalski.com/"
-                    (row []
-                        [ el [] (text "Art used in ")
+                    (paragraph []
+                        [ text "Art used in "
                         , el [ Font.italic ] (text "Scythe")
-                        , el [] (text " (board game)")
+                        , text " (board game)"
                         ]
                     )
                 ]
@@ -80,40 +86,61 @@ initialModel =
             , Section "Personal Finance"
                 [ Entry "Frugalwoods"
                     "https://www.frugalwoods.com/"
-                    (el [] <| text "Blog on financial independence and simple living")
+                    (paragraph []
+                        [ text <|
+                            "Blog on financial independence and simple living"
+                        ]
+                    )
                 ]
             , Section "Reviews"
                 [ Entry "Flashlight information"
                     "http://lygte-info.dk/"
-                    (el [] <| text "Basically the most comprehensive website on the Internet for information about flashlights, batteries, and chargers")
+                    (paragraph []
+                        [ text <|
+                            "Basically the most comprehensive website on the "
+                                ++ "Internet for information about "
+                                ++ "flashlights, batteries, and chargers"
+                        ]
+                    )
                 ]
             , Section "Search"
                 [ Entry "Wiby"
                     "https://wiby.me/"
-                    (el [] <| text "Search engine for classic websites")
+                    (paragraph []
+                        [ text
+                            "Search engine for classic websites"
+                        ]
+                    )
                 ]
             , Section "Shopping"
                 [ Entry "Higher Hacknell"
                     "https://www.higherhacknell.co.uk/cat/organic-wool-and-sheepskins"
-                    (el [] (text "Wool and sheepskins - met the farmer in Romania at Count Kalnoky's estate"))
+                    (paragraph []
+                        [ text <|
+                            "Wool and sheepskins - met the farmer in Romania "
+                                ++ "at Count Kalnoky's estate"
+                        ]
+                    )
                 , Entry "Redbubble - Appa"
                     "https://www.redbubble.com/shop/appa"
-                    (row []
-                        [ el [] (text "Appa-related merchandise (from ")
+                    (paragraph []
+                        [ text "Appa-related merchandise (from "
                         , el [ Font.italic ] (text "Avatar: The Last Airbender")
-                        , el [] (text ")")
+                        , text ")"
                         ]
                     )
                 , Entry "Rose Colored Gaming"
                     "https://rosecoloredgaming.com/"
-                    (el [] <|
-                        text
-                            "Display stands for consoles, controllers, cartridges"
+                    (paragraph []
+                        [ text <|
+                            "Display stands for consoles, controllers, "
+                                ++ "cartridges"
+                        ]
                     )
                 , Section "Bicycles"
                     [ Entry "Rodriguez Bicycles"
                         "https://www.rodbikes.com/"
-                        (el [] (text "Custom bicycles and tandems"))
+                        (paragraph [] [ text "Custom bicycles and tandems" ])
                     , Entry "SOMA Fabrications"
                         "https://www.somafab.com/"
                         Element.none
@@ -121,16 +148,23 @@ initialModel =
                 , Section "Expensive Stuff"
                     [ Entry "Bellerby and Co Globemakers"
                         "https://bellerbyandco.com/"
-                        (el [] <| text "Handcrafted, personalised globes")
+                        (paragraph []
+                            [ text "Handcrafted, personalised globes" ]
+                        )
                     ]
                 ]
             , Section "Trains"
                 [ Entry "Deutsche Bahn"
                     "https://ourairports.com/"
-                    (el [] <| text "German railway operator")
+                    (paragraph [] [ text "German railway operator" ])
                 , Entry "The Man in Seat Sixty-One"
                     "https://www.seat61.com/"
-                    (el [] <| text "Train travel guide for Europe and the rest of the world")
+                    (paragraph []
+                        [ text <|
+                            "Train travel guide for Europe and the rest of "
+                                ++ "the world"
+                        ]
+                    )
                 , Entry "OpenRailwayMap"
                     "https://www.openrailwaymap.org/"
                     Element.none
@@ -145,10 +179,15 @@ initialModel =
                 , Entry "Monumental Trees in Bavaria"
                     "https://www.monumentaltrees.com/en/records/deu/bavaria/"
                     Element.none
+                , Entry "The Wood Database"
+                    "https://www.wood-database.com/"
+                    Element.none
                 ]
             , Section "Video Games"
                 [ Entry "Analogue Super Nt Firmware Updates"
-                    "https://support.analogue.co/hc/en-us/articles/360000557452-Super-Nt-Firmware-Update-v4-9"
+                    ("https://support.analogue.co/hc/en-us/articles/"
+                        ++ "360000557452-Super-Nt-Firmware-Update-v4-9"
+                    )
                     Element.none
                 , Entry "Wii & Wii U Modding Guide"
                     "https://sites.google.com/site/completesg/home"
@@ -215,18 +254,30 @@ view model =
         [ Element.layout
             [ Font.color colors.black
             , Font.family [ Font.typeface "Georgia", Font.serif ]
-            , paddingEach { edges | top = 20, left = 30, right = 30 }
             , Background.color colors.white
             ]
           <|
-            column
-                [ width fill
-                , spacing 25
-                , paddingEach { edges | bottom = 30 }
+            row
+                [ height fill
+                , width fill
                 ]
-                (viewPageHeading model.h1
-                    :: List.map (viewSection 1 model.activeLink) sections
-                )
+                [ column [ width <| fillPortion 1 ] []
+                , column
+                    [ width <| fillPortion 30
+                    , paddingEach
+                        { edges
+                            | top = 20
+                            , left = 30
+                            , right = 30
+                            , bottom = 20
+                        }
+                    , spacing 25
+                    ]
+                    (viewPageHeading model.h1
+                        :: List.map (viewSection 1 model.activeLink) sections
+                    )
+                , column [ width <| fillPortion 1 ] []
+                ]
         ]
 
 
@@ -248,7 +299,11 @@ viewSection level activeLink entry =
                 (el
                     [ Font.size (32 - (level - 1) * 4)
                     , Font.italic
-                    , paddingEach { edges | bottom = 10, left = 40 * (level - 1) }
+                    , paddingEach
+                        { edges
+                            | bottom = 0
+                            , left = 40 * (level - 1)
+                        }
                     ]
                     (text name)
                     :: List.map (viewEntry level activeLink) entries
