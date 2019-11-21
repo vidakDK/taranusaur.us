@@ -27,24 +27,17 @@ type alias Model =
     { title : String
     , h1 : String
     , directory : Directory
-    , activeLink : Maybe Int
+    , activeLink : Maybe String
     }
 
 
 type Directory
-    = Directory (List Section)
+    = Directory (List Entry)
 
 
-type Section
+type Entry
     = Section String (List Entry)
-
-
-type alias Entry =
-    { id : Int
-    , anchor : String
-    , target : String
-    , extra : Element Msg
-    }
+    | Entry String String (Element Msg)
 
 
 initialModel : Model
@@ -53,9 +46,16 @@ initialModel =
     , h1 = "Web Directory"
     , directory =
         Directory
-            [ Section "Art"
-                [ Entry 1
-                    "Jakub Rozalski"
+            [ Section "Airplanes"
+                [ Entry "Lufthansa Surprise"
+                    "https://www.lufthansa-surprise.com/"
+                    (el [] <| text "Travel around Europe to a surprise destination")
+                , Entry "OurAirports"
+                    "https://ourairports.com/"
+                    (el [] <| text "Information about all of the world's airports")
+                ]
+            , Section "Art"
+                [ Entry "Jakub Rozalski"
                     "https://jrozalski.com/"
                     (row []
                         [ el [] (text "Art used in ")
@@ -64,13 +64,39 @@ initialModel =
                         ]
                     )
                 ]
+            , Section "Coins"
+                [ Entry "Swiss coin mintage figures"
+                    "https://www.swissmint.ch/e/dokumentation/publikationen/liste.php"
+                    Element.none
+                , Entry "Swiss coins in circulation"
+                    "https://www.snb.ch/en/iabout/cash/id/cash_coins#t2"
+                    Element.none
+                ]
+            , Section "Cycling"
+                [ Entry "Bavarian Network for Cyclists"
+                    "http://www.bayerninfo.de/en/bike"
+                    Element.none
+                ]
+            , Section "Personal Finance"
+                [ Entry "Frugalwoods"
+                    "https://www.frugalwoods.com/"
+                    (el [] <| text "Blog on financial independence and simple living")
+                ]
+            , Section "Reviews"
+                [ Entry "Flashlight information"
+                    "http://lygte-info.dk/"
+                    (el [] <| text "Basically the most comprehensive website on the Internet for information about flashlights, batteries, and chargers")
+                ]
+            , Section "Search"
+                [ Entry "Wiby"
+                    "https://wiby.me/"
+                    (el [] <| text "Search engine for classic websites")
+                ]
             , Section "Shopping"
-                [ Entry 2
-                    "Higher Hacknell"
+                [ Entry "Higher Hacknell"
                     "https://www.higherhacknell.co.uk/cat/organic-wool-and-sheepskins"
                     (el [] (text "Wool and sheepskins - met the farmer in Romania at Count Kalnoky's estate"))
-                , Entry 3
-                    "Redbubble - Appa"
+                , Entry "Redbubble - Appa"
                     "https://www.redbubble.com/shop/appa"
                     (row []
                         [ el [] (text "Appa-related merchandise (from ")
@@ -78,31 +104,53 @@ initialModel =
                         , el [] (text ")")
                         ]
                     )
-                , Entry 4
-                    "Rose Colored Gaming"
+                , Entry "Rose Colored Gaming"
                     "https://rosecoloredgaming.com/"
                     (el [] <|
                         text
                             "Display stands for consoles, controllers, cartridges"
                     )
+                , Section "Bicycles"
+                    [ Entry "Rodriguez Bicycles"
+                        "https://www.rodbikes.com/"
+                        (el [] (text "Custom bicycles and tandems"))
+                    , Entry "SOMA Fabrications"
+                        "https://www.somafab.com/"
+                        Element.none
+                    ]
+                , Section "Expensive Stuff"
+                    [ Entry "Bellerby and Co Globemakers"
+                        "https://bellerbyandco.com/"
+                        (el [] <| text "Handcrafted, personalised globes")
+                    ]
+                ]
+            , Section "Trains"
+                [ Entry "Deutsche Bahn"
+                    "https://ourairports.com/"
+                    (el [] <| text "German railway operator")
+                , Entry "The Man in Seat Sixty-One"
+                    "https://www.seat61.com/"
+                    (el [] <| text "Train travel guide for Europe and the rest of the world")
+                , Entry "OpenRailwayMap"
+                    "https://www.openrailwaymap.org/"
+                    Element.none
                 ]
             , Section "Trees"
-                [ Entry 5
-                    "Christmas Tree Farms in Germany"
+                [ Entry "Christmas Tree Farms in Germany"
                     "https://www.pickyourownchristmastree.org/DUxmastrees.php"
                     Element.none
-                , Entry 6
-                    "Monumental Trees"
+                , Entry "Monumental Trees"
                     "https://www.monumentaltrees.com/en/"
                     Element.none
-                , Entry 7
-                    "Monumental Trees in Bavaria"
+                , Entry "Monumental Trees in Bavaria"
                     "https://www.monumentaltrees.com/en/records/deu/bavaria/"
                     Element.none
                 ]
             , Section "Video Games"
-                [ Entry 8
-                    "Wii & Wii U Modding Guide"
+                [ Entry "Analogue Super Nt Firmware Updates"
+                    "https://support.analogue.co/hc/en-us/articles/360000557452-Super-Nt-Firmware-Update-v4-9"
+                    Element.none
+                , Entry "Wii & Wii U Modding Guide"
                     "https://sites.google.com/site/completesg/home"
                     Element.none
                 ]
@@ -121,15 +169,15 @@ init _ =
 
 
 type Msg
-    = HoveredLink Int
+    = HoveredLink String
     | UnHoveredLink
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        HoveredLink id ->
-            ( { model | activeLink = Just id }, Cmd.none )
+        HoveredLink link ->
+            ( { model | activeLink = Just link }, Cmd.none )
 
         UnHoveredLink ->
             ( { model | activeLink = Nothing }, Cmd.none )
@@ -173,7 +221,7 @@ view model =
           <|
             column [ width fill, spacing 25 ]
                 (viewPageHeading model.h1
-                    :: List.map (viewSection model.activeLink) sections
+                    :: List.map (viewSection 1 model.activeLink) sections
                 )
         ]
 
@@ -188,44 +236,54 @@ viewPageHeading heading =
         (text heading)
 
 
-viewSection : Maybe Int -> Section -> Element Msg
-viewSection activeLink (Section name entries) =
-    column [ spacing 12 ]
-        (el
-            [ Font.size 32
-            , Font.italic
-            , paddingEach { edges | bottom = 10 }
-            ]
-            (text name)
-            :: List.map (viewEntry activeLink) entries
-        )
+viewSection : Int -> Maybe String -> Entry -> Element Msg
+viewSection level activeLink entry =
+    case entry of
+        Section name entries ->
+            column [ spacing 12 ]
+                (el
+                    [ Font.size (32 - (level - 1) * 4)
+                    , Font.italic
+                    , paddingEach { edges | bottom = 10, left = 40 * (level - 1) }
+                    ]
+                    (text name)
+                    :: List.map (viewEntry level activeLink) entries
+                )
+
+        Entry anchor target extra ->
+            Element.none
 
 
-viewEntry : Maybe Int -> Entry -> Element Msg
-viewEntry activeLink entry =
-    let
-        baseAttributes =
-            [ Font.color colors.link
-            , Events.onMouseEnter (HoveredLink entry.id)
-            , Events.onMouseLeave UnHoveredLink
-            ]
+viewEntry : Int -> Maybe String -> Entry -> Element Msg
+viewEntry level activeLink entry =
+    case entry of
+        Entry anchor target extra ->
+            let
+                baseAttributes =
+                    [ Font.color colors.link
+                    , Events.onMouseEnter (HoveredLink anchor)
+                    , Events.onMouseLeave UnHoveredLink
+                    ]
 
-        attributes =
-            case activeLink of
-                Just id ->
-                    if id == entry.id then
-                        Font.underline :: baseAttributes
+                attributes =
+                    case activeLink of
+                        Just link ->
+                            if link == anchor then
+                                Font.underline :: baseAttributes
 
-                    else
-                        baseAttributes
+                            else
+                                baseAttributes
 
-                Nothing ->
-                    baseAttributes
-    in
-    column [ paddingEach { edges | left = 40 }, spacing 3 ]
-        [ link attributes { url = entry.target, label = text entry.anchor }
-        , entry.extra
-        ]
+                        Nothing ->
+                            baseAttributes
+            in
+            column [ paddingEach { edges | left = 40 * level }, spacing 3 ]
+                [ link attributes { url = target, label = text anchor }
+                , extra
+                ]
+
+        Section name entries ->
+            viewSection (level + 1) activeLink entry
 
 
 
