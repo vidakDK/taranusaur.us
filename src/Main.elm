@@ -6,7 +6,6 @@ import Element.Background as Background
 import Element.Events as Events
 import Element.Font as Font
 import Json.Decode as Decode
-import Unique
 
 
 main : Program () Model Msg
