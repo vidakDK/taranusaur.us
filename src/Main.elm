@@ -36,7 +36,7 @@ type Directory
 
 type Entry
     = Section String (List Entry)
-    | Entry String String (Element Msg)
+    | Entry String String (Maybe (Element Msg))
 
 
 initialModel : Model
@@ -48,149 +48,149 @@ initialModel =
             [ Section "Airplanes"
                 [ Entry "Lufthansa Surprise"
                     "https://www.lufthansa-surprise.com/"
-                    (paragraph []
-                        [ text "Travel around Europe to a surprise destination"
-                        ]
+                    (Just <|
+                        text "Travel around Europe to a surprise destination"
                     )
                 , Entry "OurAirports"
                     "https://ourairports.com/"
-                    (paragraph []
-                        [ text "Information about all of the world's airports"
-                        ]
+                    (Just <|
+                        text "Information about all of the world's airports"
                     )
                 ]
             , Section "Art"
                 [ Entry "Jakub Rozalski"
                     "https://jrozalski.com/"
-                    (paragraph []
-                        [ text "Art used in "
-                        , el [ Font.italic ] (text "Scythe")
-                        , text " (board game)"
-                        ]
+                    (Just <|
+                        row []
+                            [ text "Art used in "
+                            , el [ Font.italic ] (text "Scythe")
+                            , text " (board game)"
+                            ]
                     )
                 ]
             , Section "Coins"
                 [ Entry "Swiss coin mintage figures"
                     "https://www.swissmint.ch/e/dokumentation/publikationen/liste.php"
-                    Element.none
+                    Nothing
                 , Entry "Swiss coins in circulation"
                     "https://www.snb.ch/en/iabout/cash/id/cash_coins#t2"
-                    Element.none
+                    Nothing
                 ]
             , Section "Cycling"
                 [ Entry "Bavarian Network for Cyclists"
                     "http://www.bayerninfo.de/en/bike"
-                    Element.none
+                    Nothing
+                , Entry "EuroVelo"
+                    "https://en.eurovelo.com/"
+                    (Just <| text "European cycle routes")
                 ]
             , Section "Personal Finance"
                 [ Entry "Frugalwoods"
                     "https://www.frugalwoods.com/"
-                    (paragraph []
-                        [ text <|
-                            "Blog on financial independence and simple living"
-                        ]
+                    (Just <|
+                        text "Blog on financial independence and simple living"
                     )
                 ]
             , Section "Reviews"
                 [ Entry "Flashlight information"
                     "http://lygte-info.dk/"
-                    (paragraph []
-                        [ text <|
+                    (Just <|
+                        text <|
                             "Basically the most comprehensive website on the "
                                 ++ "Internet for information about "
                                 ++ "flashlights, batteries, and chargers"
-                        ]
                     )
                 ]
             , Section "Search"
                 [ Entry "Wiby"
                     "https://wiby.me/"
-                    (paragraph []
-                        [ text
-                            "Search engine for classic websites"
-                        ]
-                    )
+                    (Just <| text "Search engine for classic websites")
                 ]
             , Section "Shopping"
                 [ Entry "Higher Hacknell"
                     "https://www.higherhacknell.co.uk/cat/organic-wool-and-sheepskins"
-                    (paragraph []
-                        [ text <|
+                    (Just <|
+                        text <|
                             "Wool and sheepskins - met the farmer in Romania "
                                 ++ "at Count Kalnoky's estate"
-                        ]
                     )
                 , Entry "Redbubble - Appa"
                     "https://www.redbubble.com/shop/appa"
-                    (paragraph []
-                        [ text "Appa-related merchandise (from "
-                        , el [ Font.italic ] (text "Avatar: The Last Airbender")
-                        , text ")"
-                        ]
+                    (Just <|
+                        row []
+                            [ text "Appa-related merchandise (from "
+                            , el [ Font.italic ]
+                                (text "Avatar: The Last Airbender")
+                            , text ")"
+                            ]
                     )
                 , Entry "Rose Colored Gaming"
                     "https://rosecoloredgaming.com/"
-                    (paragraph []
-                        [ text <|
+                    (Just <|
+                        text <|
                             "Display stands for consoles, controllers, "
                                 ++ "cartridges"
-                        ]
                     )
                 , Section "Bicycles"
                     [ Entry "Rodriguez Bicycles"
                         "https://www.rodbikes.com/"
-                        (paragraph [] [ text "Custom bicycles and tandems" ])
+                        (Just <| text "Custom bicycles and tandems")
                     , Entry "SOMA Fabrications"
                         "https://www.somafab.com/"
-                        Element.none
+                        Nothing
                     ]
                 , Section "Expensive Stuff"
                     [ Entry "Bellerby and Co Globemakers"
                         "https://bellerbyandco.com/"
-                        (paragraph []
-                            [ text "Handcrafted, personalised globes" ]
-                        )
+                        (Just <| text "Handcrafted, personalised globes")
                     ]
                 ]
             , Section "Trains"
                 [ Entry "Deutsche Bahn"
                     "https://ourairports.com/"
-                    (paragraph [] [ text "German railway operator" ])
+                    (Just <| text "German railway operator")
                 , Entry "The Man in Seat Sixty-One"
                     "https://www.seat61.com/"
-                    (paragraph []
-                        [ text <|
+                    (Just <|
+                        text <|
                             "Train travel guide for Europe and the rest of "
                                 ++ "the world"
-                        ]
                     )
                 , Entry "OpenRailwayMap"
                     "https://www.openrailwaymap.org/"
-                    Element.none
+                    Nothing
+                , Entry "vagonWEB"
+                    "https://www.vagonweb.cz/"
+                    (Just <| text "Information on composition of trains")
                 ]
             , Section "Trees"
                 [ Entry "Christmas Tree Farms in Germany"
                     "https://www.pickyourownchristmastree.org/DUxmastrees.php"
-                    Element.none
+                    Nothing
                 , Entry "Monumental Trees"
                     "https://www.monumentaltrees.com/en/"
-                    Element.none
+                    Nothing
                 , Entry "Monumental Trees in Bavaria"
                     "https://www.monumentaltrees.com/en/records/deu/bavaria/"
-                    Element.none
+                    Nothing
                 , Entry "The Wood Database"
                     "https://www.wood-database.com/"
-                    Element.none
+                    Nothing
                 ]
             , Section "Video Games"
                 [ Entry "Analogue Super Nt Firmware Updates"
                     ("https://support.analogue.co/hc/en-us/articles/"
                         ++ "360000557452-Super-Nt-Firmware-Update-v4-9"
                     )
-                    Element.none
+                    Nothing
                 , Entry "Wii & Wii U Modding Guide"
                     "https://sites.google.com/site/completesg/home"
-                    Element.none
+                    Nothing
+                ]
+            , Section "Weather"
+                [ Entry "Weather report"
+                    "http://wttr.in/"
+                    (Just <| text "Text-based local weather forecast")
                 ]
             ]
     , activeLink = Nothing
@@ -253,7 +253,7 @@ view model =
         [ Element.layout
             [ Font.color colors.black
             , Font.family [ Font.typeface "Georgia", Font.serif ]
-            , Background.color colors.white
+            , Background.color <| rgb 0.99 0.99 0.99
             ]
           <|
             row
@@ -271,6 +271,7 @@ view model =
                             , bottom = 20
                         }
                     , spacing 25
+                    , Background.color colors.white
                     ]
                     (viewPageHeading model.h1
                         :: List.map (viewSection 1 model.activeLink) sections
@@ -294,7 +295,7 @@ viewSection : Int -> Maybe String -> Entry -> Element Msg
 viewSection level activeLink entry =
     case entry of
         Section name entries ->
-            column [ spacing 12 ]
+            column [ spacing 16 ]
                 (el
                     [ Font.size (32 - (level - 1) * 4)
                     , Font.italic
@@ -334,10 +335,18 @@ viewEntry level activeLink entry =
 
                         Nothing ->
                             baseAttributes
+
+                description =
+                    case extra of
+                        Just element ->
+                            paragraph [ Font.size 16 ] [ element ]
+
+                        Nothing ->
+                            Element.none
             in
-            column [ paddingEach { edges | left = 40 * level }, spacing 3 ]
+            column [ paddingEach { edges | left = 40 * level }, spacing 4 ]
                 [ link attributes { url = target, label = text anchor }
-                , extra
+                , description
                 ]
 
         Section name entries ->
