@@ -68,6 +68,13 @@ initialModel =
                             ]
                     )
                 ]
+            , Section "Astronomy"
+                [ Entry "Heavens-Above"
+                    "https://www.heavens-above.com/"
+                    (Just <|
+                        text "Track satellites and other objects in space"
+                    )
+                ]
             , Section "Coins"
                 [ Entry "Swiss coin mintage figures"
                     "https://www.swissmint.ch/e/dokumentation/publikationen/liste.php"
@@ -83,6 +90,18 @@ initialModel =
                 , Entry "EuroVelo"
                     "https://en.eurovelo.com/"
                     (Just <| text "European cycle routes")
+                ]
+            , Section "Dry Stone Walling"
+                [ Entry "Dry Stone Walling Association"
+                    "https://www.dswa.org.uk/"
+                    Nothing
+                , Entry "The Stone Trust"
+                    "https://thestonetrust.org/"
+                    (Just <|
+                        text <|
+                            "North American facility for dry stone walling "
+                                ++ "education"
+                    )
                 ]
             , Section "Personal Finance"
                 [ Entry "Frugalwoods"
@@ -143,12 +162,25 @@ initialModel =
                     [ Entry "Bellerby and Co Globemakers"
                         "https://bellerbyandco.com/"
                         (Just <| text "Handcrafted, personalised globes")
+                    , Entry "AMG"
+                        ("http://www.high-fidelity-studio.de/"
+                            ++ "high-fidelitystudio/Produkte/Seiten/AMG.html"
+                        )
+                        (Just <| text "High-end turntables")
                     ]
                 ]
             , Section "Trains"
-                [ Entry "Deutsche Bahn"
-                    "https://ourairports.com/"
+                [ Entry "Carte du réseau ferré en France"
+                    ("https://www.sncf-reseau.com/fr/carte/"
+                        ++ "carte-reseau-ferre-en-france"
+                    )
+                    (Just <| text "French railway infrastructure map")
+                , Entry "Deutsche Bahn"
+                    "https://www.bahn.com/en/view/index.shtml"
                     (Just <| text "German railway operator")
+                , Entry "DB Netze Fahrweg"
+                    "https://geovdbn.deutschebahn.com/pgv/public/map/isr.xhtml"
+                    (Just <| text "German railway infrastructure map")
                 , Entry "The Man in Seat Sixty-One"
                     "https://www.seat61.com/"
                     (Just <|
@@ -186,6 +218,9 @@ initialModel =
                 , Entry "Wii & Wii U Modding Guide"
                     "https://sites.google.com/site/completesg/home"
                     Nothing
+                , Entry "Witgui"
+                    "https://desairem.com/wordpress/witgui/"
+                    (Just <| text "Wii & GameCube game manager for macOS")
                 ]
             , Section "Weather"
                 [ Entry "Weather report"
