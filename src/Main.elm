@@ -90,6 +90,9 @@ initialModel =
                 , Entry "EuroVelo"
                     "https://en.eurovelo.com/"
                     (Just <| text "European cycle routes")
+                , Entry "Sheldon Brown"
+                    "https://www.sheldonbrown.com/"
+                    (Just <| text "Great technical information on bicycles")
                 ]
             , Section "Dry Stone Walling"
                 [ Entry "Dry Stone Walling Association"
